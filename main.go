@@ -25,7 +25,7 @@ func main() {
 
 func runMarkov() {
 	var text string
-	check := regexp.MustCompile(`^http`)
+	check := regexp.MustCompile(`http`)
 	markovBlock := [][]string{}
 	notes, err := misskeyapi.MisskeyGetnotesRequest(config.Loadconfig.Misskey.Token)
 	if err != nil {
