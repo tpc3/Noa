@@ -37,15 +37,14 @@ func runMarkov() {
 	}
 	defer m.Destroy()
 
-	for _, note := range notes {
-		_data := markov.ParseToNode(m, note)
-		elems := markov.GetMarkovBlocks(_data)
-		markovBlock = append(markovBlock, elems...)
-	}
+	for i := 0; i < 10; i++ {
+		for _, note := range notes {
+			_data := markov.ParseToNode(m, note)
+			elems := markov.GetMarkovBlocks(_data)
+			markovBlock = append(markovBlock, elems...)
+		}
 
-	noteElemset := markov.MarkovChainExec(markovBlock)
-
-	for {
+		noteElemset := markov.MarkovChainExec(markovBlock)
 		text = markov.TextGenerate(noteElemset)
 
 		if !check.MatchString(text) {
