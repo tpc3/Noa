@@ -3,8 +3,8 @@ package misskeyapi
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/tpc3/Noa/lib/config"
@@ -15,7 +15,8 @@ var (
 	sendnotesEndpoint = "https://" + config.Loadconfig.Misskey.Host + "/api/notes/create"
 )
 
-func MisskeyGetnotesRequest(token string) []string {
+func MisskeyGetnotesRequest(token string) ([]string, error) {
+	check := true
 	requestBody := GetnotesRequest{
 		Limit: 100,
 		Token: token,
@@ -23,12 +24,12 @@ func MisskeyGetnotesRequest(token string) []string {
 
 	requestJson, err := json.Marshal(requestBody)
 	if err != nil {
-		log.Fatal("Marshal json error: ", err)
+		check = false
 	}
 
 	req, err := http.NewRequest("POST", getnotesEndpoint, bytes.NewBuffer(requestJson))
 	if err != nil {
-		log.Fatal("Creating http request error: ", err)
+		check = false
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -36,23 +37,23 @@ func MisskeyGetnotesRequest(token string) []string {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal("Sending https request error: ", err)
+		check = false
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		log.Fatal("API error(getnotes): ", err)
+		check = false
 	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal("Reading body error: ", err)
+		check = false
 	}
 
 	response := make([]*NotesResponse, 0)
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		log.Fatal("Unmarshal json error: ", err)
+		check = false
 	}
 
 	var resarray []string
@@ -67,10 +68,16 @@ func MisskeyGetnotesRequest(token string) []string {
 		}
 	}
 
-	return resarray
+	if check {
+		return resarray, nil
+	} else {
+		return resarray, errors.New("API error")
+	}
+
 }
 
-func MisskeySendnotesRequest(token string, text string) {
+func MisskeySendnotesRequest(token string, text string) error {
+	check := true
 	requestBody := NotesRequest{
 		Visibility: "home",
 		Text:       text,
@@ -80,12 +87,12 @@ func MisskeySendnotesRequest(token string, text string) {
 
 	requestJson, err := json.Marshal(requestBody)
 	if err != nil {
-		log.Fatal("Marshaling json error: ", err)
+		check = false
 	}
 
 	req, err := http.NewRequest("POST", sendnotesEndpoint, bytes.NewBuffer(requestJson))
 	if err != nil {
-		log.Fatal("Creating http request error: ", err)
+		check = false
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -93,11 +100,18 @@ func MisskeySendnotesRequest(token string, text string) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal("Sending https request error: ", err)
+		check = false
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		log.Fatal("API error(sendnotes): ", err)
+		check = false
 	}
+
+	if check {
+		return nil
+	} else {
+		return errors.New("API error")
+	}
+
 }

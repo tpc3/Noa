@@ -28,7 +28,10 @@ func runMarkov() {
 	check := regexp.MustCompile(`^http`)
 	for {
 		markovBlock := [][]string{}
-		notes := misskeyapi.MisskeyGetnotesRequest(config.Loadconfig.Misskey.Token)
+		notes, err := misskeyapi.MisskeyGetnotesRequest(config.Loadconfig.Misskey.Token)
+		if err != nil {
+			return
+		}
 		m, err := mecab.New("-Owakati")
 		if err != nil {
 			log.Fatal("New mecab error: ", err)
@@ -51,5 +54,8 @@ func runMarkov() {
 	}
 
 	log.Print(text)
-	misskeyapi.MisskeySendnotesRequest(config.Loadconfig.Misskey.Token, text)
+	err := misskeyapi.MisskeySendnotesRequest(config.Loadconfig.Misskey.Token, text)
+	if err != nil {
+		return
+	}
 }
