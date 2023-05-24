@@ -25,7 +25,6 @@ func main() {
 
 func runMarkov() {
 	var text string
-	check := regexp.MustCompile(`http`)
 	markovBlock := [][]string{}
 	notes, err := misskeyapi.MisskeyGetnotesRequest(config.Loadconfig.Misskey.Token)
 	if err != nil {
@@ -47,7 +46,15 @@ func runMarkov() {
 		noteElemset := markov.MarkovChainExec(markovBlock)
 		text = markov.TextGenerate(noteElemset)
 
-		if !check.MatchString(text) {
+		ok := true
+		for _, v := range config.Loadconfig.TextBlacklist {
+			check := regexp.MustCompile(v)
+			if check.MatchString(text) {
+				ok = false
+			}
+		}
+
+		if ok {
 			break
 		}
 	}

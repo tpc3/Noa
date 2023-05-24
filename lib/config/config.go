@@ -12,6 +12,7 @@ type Config struct {
 		Token string
 		Host  string
 	}
+	TextBlacklist []string `yaml:"text_blacklist"`
 }
 
 const configFile = "./config.yml"

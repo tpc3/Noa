@@ -1,3 +1,5 @@
 misskey:
   token: YOUR_TOKEN_IS_HERE
   host : YOUR_HOST_IS_HERE
+text_blacklist: 
+  - "http" # Add here to ignore text at all for regular expression
