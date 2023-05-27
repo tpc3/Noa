@@ -8,6 +8,11 @@ type GetnotesRequest struct {
 type NotesResponse struct {
 	Text   string `json:"text"`
 	Renote Renote `json:"renote"`
+	User   User   `json:"user"`
+}
+
+type User struct {
+	Id string `json:"id"`
 }
 
 type Renote struct {
@@ -19,4 +24,12 @@ type NotesRequest struct {
 	Text       string `json:"text"`
 	Token      string `json:"i"`
 	LocalOnly  bool   `json:"localOnly"`
+}
+
+type GetIDRequest struct {
+	Token string `json:"i"`
+}
+
+type IDResponse struct {
+	ID string `json:"id"`
 }

@@ -5,17 +5,62 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/tpc3/Noa/lib/config"
 )
 
 var (
+	getIDEndpoint     = "https://" + config.Loadconfig.Misskey.Host + "/api/i"
 	getnotesEndpoint  = "https://" + config.Loadconfig.Misskey.Host + "/api/notes/timeline"
 	sendnotesEndpoint = "https://" + config.Loadconfig.Misskey.Host + "/api/notes/create"
 )
 
-func MisskeyGetnotesRequest(token string) ([]string, error) {
+func MisskeyGetuserID(token string) string {
+	requestBody := GetIDRequest{
+		Token: token,
+	}
+
+	requestJson, err := json.Marshal(requestBody)
+	if err != nil {
+		log.Fatal("Marshaling json err: ", err)
+	}
+
+	req, err := http.NewRequest("POST", getIDEndpoint, bytes.NewBuffer(requestJson))
+	if err != nil {
+		log.Fatal("Creating http request error: ", err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatal("Sending http request error: ", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		log.Fatal("HTTP status = ", strconv.Itoa(resp.StatusCode))
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal("Reading body error: ", err)
+	}
+
+	var response IDResponse
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		log.Fatal("Unmarshal json error: ", err)
+	}
+
+	return response.ID
+}
+
+func MisskeyGetnotesRequest(token string, botID string) ([]string, error) {
 	check := true
 	requestBody := GetnotesRequest{
 		Limit: 100,
@@ -58,7 +103,9 @@ func MisskeyGetnotesRequest(token string) ([]string, error) {
 
 	var resarray []string
 	for i := 0; i < 100; i++ {
-		if response[i].Text == "" {
+		if response[i].User.Id == botID {
+			continue
+		} else if response[i].Text == "" {
 			if response[i].Renote.Text == "" {
 				continue
 			}

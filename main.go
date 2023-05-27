@@ -14,8 +14,9 @@ import (
 )
 
 func main() {
+	botID := misskeyapi.MisskeyGetuserID(config.Loadconfig.Misskey.Token)
 	c := cron.New()
-	c.AddFunc("0,15,30,45 * * * *", func() { runMarkov() })
+	c.AddFunc("@hourly", func() { runMarkov(botID) })
 	c.Start()
 	log.Print("Noa is now running!")
 	stop := make(chan os.Signal, 1)
@@ -23,10 +24,10 @@ func main() {
 	<-stop
 }
 
-func runMarkov() {
+func runMarkov(botID string) {
 	var text string
 	markovBlock := [][]string{}
-	notes, err := misskeyapi.MisskeyGetnotesRequest(config.Loadconfig.Misskey.Token)
+	notes, err := misskeyapi.MisskeyGetnotesRequest(config.Loadconfig.Misskey.Token, botID)
 	if err != nil {
 		return
 	}
