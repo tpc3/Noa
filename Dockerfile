@@ -1,4 +1,4 @@
-FROM golang:latest AS build
+FROM golang
 RUN apt update && apt install -y mecab libmecab-dev mecab-ipadic-utf8
 ENV GO111MODULE on
 ENV CGO_LDFLAGS -L/usr/lib/x86_64-linux-gnu -lmecab -lstdc++

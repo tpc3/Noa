@@ -6,7 +6,7 @@ Misskey Bot to post notes on the Markov chain.
 ## Docker
 1. [Dowload config.yml](https://raw.githubusercontent.com/tpc3/Noa/main/config.yml)
 2. Enter your token and host server to config.yml
-3. `docker run --rm -it -v $(PWD)config.yml:/go/src/Noa/config.yml ghcr.io/tpc3/noa`
+3. `docker run --rm -it -v $(PWD)/config.yml:/go/src/Noa/config.yml ghcr.io/tpc3/noa`
 
 ## Build
 1. Clone thos repository
