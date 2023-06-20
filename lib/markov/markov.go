@@ -7,32 +7,19 @@ import (
 	"math/big"
 	"math/rand"
 
-	"github.com/bluele/mecab-golang"
+	"github.com/ikawaha/kagome-dict/ipa"
+	"github.com/ikawaha/kagome/v2/tokenizer"
 )
 
-func ParseToNode(m *mecab.MeCab, input string) []string {
+func ParseToNode(input string) []string {
 	words := []string{}
-	tg, err := m.NewTagger()
-	if err != nil {
-		log.Fatal("New tagger error: ", err)
-	}
-	defer tg.Destroy()
 
-	lt, err := m.NewLattice(input)
+	t, err := tokenizer.New(ipa.Dict(), tokenizer.OmitBosEos())
 	if err != nil {
-		log.Fatal("New Lattice error: ", err)
+		log.Fatal("New kagome error: ", err)
 	}
-	defer lt.Destroy()
 
-	node := tg.ParseToNode(lt)
-	for {
-		if node.Surface() != "" {
-			words = append(words, node.Surface())
-		}
-		if node.Next() != nil {
-			break
-		}
-	}
+	words = t.Wakati(input)
 
 	return words
 }

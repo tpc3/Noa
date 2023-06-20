@@ -6,7 +6,6 @@ import (
 	"os/signal"
 	"regexp"
 
-	"github.com/bluele/mecab-golang"
 	"github.com/robfig/cron/v3"
 	"github.com/tpc3/Noa/lib/config"
 	"github.com/tpc3/Noa/lib/markov"
@@ -31,15 +30,10 @@ func runMarkov(botID string) {
 	if err != nil {
 		return
 	}
-	m, err := mecab.New("-Owakati")
-	if err != nil {
-		log.Fatal("New mecab error: ", err)
-	}
-	defer m.Destroy()
 
 	for i := 0; i < 10; i++ {
 		for _, note := range notes {
-			_data := markov.ParseToNode(m, note)
+			_data := markov.ParseToNode(note)
 			elems := markov.GetMarkovBlocks(_data)
 			markovBlock = append(markovBlock, elems...)
 		}

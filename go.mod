@@ -3,7 +3,10 @@ module github.com/tpc3/Noa
 go 1.20
 
 require (
-	github.com/bluele/mecab-golang v0.0.0-20180831023624-c8cfe04e87f9 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
+	github.com/ikawaha/kagome-dict/ipa v1.0.10
+	github.com/ikawaha/kagome/v2 v2.9.3
+	github.com/robfig/cron/v3 v3.0.1
+	gopkg.in/yaml.v2 v2.4.0
 )
+
+require github.com/ikawaha/kagome-dict v1.0.9 // indirect
