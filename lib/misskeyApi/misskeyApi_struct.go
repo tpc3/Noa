@@ -6,17 +6,13 @@ type GetnotesRequest struct {
 }
 
 type NotesResponse struct {
-	Text   string `json:"text"`
-	Renote Renote `json:"renote"`
-	User   User   `json:"user"`
+	Text     string `json:"text"`
+	RenoteId string `json:"renoteId"`
+	User     User   `json:"user"`
 }
 
 type User struct {
 	Id string `json:"id"`
-}
-
-type Renote struct {
-	Text string `json:"text"`
 }
 
 type NotesRequest struct {
