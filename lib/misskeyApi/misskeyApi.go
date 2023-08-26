@@ -103,7 +103,7 @@ func MisskeyGetnotesRequest(token string, botID string) ([]string, error) {
 
 	var resarray []string
 	for i := 0; i < 100; i++ {
-		if response[i].User.Id == botID || response[i].Text == "" || response[i].RenoteId != "null" {
+		if response[i].User.Id == botID || response[i].Text == "" || response[i].RenoteId != "" {
 			continue
 		} else {
 			resarray = append(resarray, response[i].Text)
