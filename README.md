@@ -1,5 +1,5 @@
 # Noa
-[![Docker Image CI](https://github.com/tpc3/Bocchi-Go/actions/workflows/docker-image.yml/badge.svg)](https://github.com/tpc3/Bocchi-Go/actions/workflows/docker-image.yml)  
+[![Docker Image CI](https://github.com/tpc3/Noa/actions/workflows/docker-image.yml/badge.svg)](https://github.com/tpc3/Noa/actions/workflows/docker-image.yml)  
 Misskey Bot to post notes on the Markov chain.
 
 # Use
