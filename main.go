@@ -33,8 +33,8 @@ func runMarkov(botID string) {
 
 	for i := 0; i < 10; i++ {
 		for _, note := range notes {
-			_data := markov.ParseToNode(note)
-			elems := markov.GetMarkovBlocks(_data)
+			data := markov.ParseToNode(note)
+			elems := markov.GetMarkovBlocks(data)
 			markovBlock = append(markovBlock, elems...)
 		}
 
