@@ -16,6 +16,7 @@ func main() {
 	botID := misskeyapi.MisskeyGetuserID(config.Loadconfig.Misskey.Token)
 	c := cron.New()
 	c.AddFunc("@hourly", func() { runMarkov(botID) })
+	c.AddFunc("@weekly", func() { config.GetTlds() })
 	c.Start()
 	log.Print("Noa is now running!")
 	stop := make(chan os.Signal, 1)
@@ -31,7 +32,8 @@ func runMarkov(botID string) {
 		return
 	}
 
-	for i := 0; i < 10; i++ {
+	// Create text
+	for i := 0; i < 100; i++ {
 		for _, note := range notes {
 			data := markov.ParseToNode(note)
 			elems := markov.GetMarkovBlocks(data)
@@ -48,7 +50,11 @@ func runMarkov(botID string) {
 				ok = false
 			}
 		}
+		if !ok {
+			continue
+		}
 
+		ok = config.CheckTld(text)
 		if ok {
 			break
 		}
@@ -56,7 +62,6 @@ func runMarkov(botID string) {
 
 	err = misskeyapi.MisskeySendnotesRequest(config.Loadconfig.Misskey.Token, text)
 	if err != nil {
-		log.Print(text)
 		return
 	}
 }

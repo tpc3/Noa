@@ -9,4 +9,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-require github.com/ikawaha/kagome-dict v1.0.9 // indirect
+require (
+	github.com/ikawaha/kagome-dict v1.0.9 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
+)
