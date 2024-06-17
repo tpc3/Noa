@@ -33,6 +33,8 @@ func runMarkov(botID string) {
 	}
 
 	// Create text
+	var okBlacklist bool
+	var okTld bool
 	for i := 0; i < 100; i++ {
 		for _, note := range notes {
 			data := markov.ParseToNode(note)
@@ -43,25 +45,28 @@ func runMarkov(botID string) {
 		noteElemset := markov.MarkovChainExec(markovBlock)
 		text = markov.TextGenerate(noteElemset)
 
-		ok := true
+		okBlacklist = true
 		for _, v := range config.Loadconfig.TextBlacklist {
 			check := regexp.MustCompile(v)
 			if check.MatchString(text) {
-				ok = false
+				okBlacklist = false
 			}
 		}
-		if !ok {
-			continue
-		}
 
-		ok = config.CheckTld(text)
-		if ok {
-			break
+		okTld = true
+		okTld = config.CheckTld(text)
+
+		if !okBlacklist || !okTld {
+			continue
 		}
 	}
 
-	err = misskeyapi.MisskeySendnotesRequest(config.Loadconfig.Misskey.Token, text)
-	if err != nil {
-		return
+	if okBlacklist && okTld {
+		err = misskeyapi.MisskeySendnotesRequest(config.Loadconfig.Misskey.Token, text)
+		if err != nil {
+			return
+		}
+	} else {
+		log.Println("err")
 	}
 }
